@@ -73,7 +73,7 @@ class Produto(models.Model):
         return self.nome
     
 
-    
+
 """
     Variacao:
             nome - char
@@ -82,3 +82,18 @@ class Produto(models.Model):
             preco_promocional - Float
             estoque - Int
 """
+
+class Variacao(models.Model):
+    nome = models.CharField(max_length=50,blank=True, null=True)
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    preco = models.FloatField()
+    preco_promocional = models.FloatField(default=0)
+    estoque = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        verbose_name = 'Variação'
+        verbose_name_plural = 'Variações'
+
+    def __str__(self):
+        return self.nome or self.produto.nome
+        
