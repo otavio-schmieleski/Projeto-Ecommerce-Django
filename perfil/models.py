@@ -1,5 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.forms import ValidationError
+
+import re
+
+from utils.validacpf import valida_cpf
 # Create your models here.
 
 """
@@ -45,7 +50,7 @@ PerfilUsuario
 """
 
 class Perfil(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Usuário')
     idade = models.PositiveIntegerField()
     data_nascimento = models.DateField()
     cpf = models.CharField(max_length=11, help_text='Informe apenas os números sem caracter')
@@ -90,11 +95,23 @@ class Perfil(models.Model):
     )
 
     def __str__(self):
-        return f'{self.user.first_name} {self.user.last_name}'
+        return f'{self.user}'
 
-
+    # faz validações nos campos 
     def clean(self):
-        pass
+        error_messages = {}
+
+        if not valida_cpf(self.cpf):
+            error_messages['cpf'] = 'Digite um cpf Válido'
+        
+        if re.search(r'[^0-9]', self.cep) or len(self.cep) < 8:
+            error_messages['cep'] = 'Informe um CEP Válido, digite os 8 digitos do CEP'
+        
+        
+        if error_messages:
+            raise ValidationError(error_messages)
+        
+
 
     class Meta:
         verbose_name = 'Perfil'
