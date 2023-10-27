@@ -113,7 +113,7 @@ class RemoverDoCarrinho(View):
 
 class Carrinho(View):
     def get(self,*args, **kwargs):
-            return HttpResponse('Carrinho')
+            return render(self.request, 'produto/carrinho.html')
     
 class Finalizar(View):
     def get(self,*args, **kwargs):
